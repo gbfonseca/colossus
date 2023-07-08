@@ -1,0 +1,8 @@
+specVersion: 0.35.0
+name: serverless-template
+runtime: node
+registry: ""
+image: ""
+created: 2023-07-05T22:56:35.878169557-03:00
+build:
+  pvcSize: 256Mi
