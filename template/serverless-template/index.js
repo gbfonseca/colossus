@@ -1,5 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const Clazz = require('./developer-code');
+/* eslint-disable @typescript-eslint/no-var-requires */
+const Clazz = require('./main');
+require('dotenv').config();
 
 const handle = async (context, body) => {
   context.log.info('query', context.query);

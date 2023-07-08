@@ -1,6 +1,7 @@
 import { Readable } from 'stream';
 
 import { CreateFunctionDTO } from '../../src/modules/colossus/dto/CreateFunctionDTO';
+import { InvokeFunctioDTO } from '../../src/modules/colossus/dto/InvokeFunctionDTO';
 
 export class Factory {
   static createFunctionDTO(): CreateFunctionDTO {
@@ -24,5 +25,13 @@ export class Factory {
         stream: new Readable(),
       },
     ];
+  }
+
+  static createInvokeFunctionDTO(): InvokeFunctioDTO {
+    return {
+      body: {},
+      method: 'handler',
+      slug: 'miniapp-zoro',
+    };
   }
 }

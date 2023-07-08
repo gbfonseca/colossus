@@ -36,14 +36,20 @@ export class ColossusRepository {
       'template',
       'serverless-template',
     );
+    await fs.mkdir(storagePath, { recursive: true });
+    await fs.cp(templatePath, storagePath, { recursive: true });
+
+    const yamlStoragePath = path.resolve(storagePath, 'func.yaml');
+    const content = await fs.readFile(yamlStoragePath, 'utf-8');
+
+    const newContent = content.replace('serverless-template', slug);
+    await fs.writeFile(yamlStoragePath, newContent);
 
     for (const file of files) {
       const { originalname, buffer } = file;
       const filePath = path.resolve(storagePath, originalname);
 
       const code = buffer.toString('utf-8');
-      await fs.mkdir(storagePath, { recursive: true });
-      await fs.cp(templatePath, storagePath, { recursive: true });
       await fs.writeFile(filePath, code);
     }
 
@@ -57,6 +63,8 @@ export class ColossusRepository {
     this.logger.debug('Serverless function criada e deployada com sucesso!', {
       slug,
     });
+
+    await fs.rm(storagePath, { force: true, recursive: true });
 
     return {
       ok: true,

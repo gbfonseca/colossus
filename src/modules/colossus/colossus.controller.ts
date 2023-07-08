@@ -4,14 +4,15 @@ import {
   Inject,
   Logger,
   Post,
-  UploadedFile,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { KnativeService } from 'src/infra/knative/knative.service';
 
 import { ColossusService } from './colossus.service';
 import { CreateFunctionDTO } from './dto/CreateFunctionDTO';
+import { InvokeFunctioDTO } from './dto/InvokeFunctionDTO';
 
 @Controller('colossus')
 export class ColossusController {
@@ -19,6 +20,7 @@ export class ColossusController {
 
   constructor(
     @Inject(ColossusService) private readonly colossusService: ColossusService,
+    @Inject(KnativeService) private readonly knativeService: KnativeService,
   ) {}
 
   @Post('/file')
@@ -33,5 +35,10 @@ export class ColossusController {
       body,
     );
     return await this.colossusService.createFunction(file, body);
+  }
+
+  @Post('invoke')
+  async invokeFunction(@Body() body: InvokeFunctioDTO) {
+    return await this.knativeService.invoke(body);
   }
 }

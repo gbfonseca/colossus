@@ -1,6 +1,12 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ServerlessClient } from 'src/domain/ServerlessClient';
+import { InvokeFunctioDTO } from 'src/modules/colossus/dto/InvokeFunctionDTO';
 import { CommandService } from 'src/utils/command/command.service';
+
+type KnServiceLSResultType = {
+  URL: string;
+  NAME: string;
+};
 
 @Injectable()
 export class KnativeService implements ServerlessClient {
@@ -27,5 +33,51 @@ export class KnativeService implements ServerlessClient {
     return {
       message: 'Função serverless criada com sucesso!',
     };
+  }
+
+  async invoke(invokeFunctioDTO: InvokeFunctioDTO) {
+    const { slug, method, body } = invokeFunctioDTO;
+    const bashCommand = `kn service ls`;
+
+    const { stdout } = await this.commandService.exec(bashCommand);
+
+    const data =
+      this.convertOutputToArrayOfObject<KnServiceLSResultType>(stdout);
+    console.log(data);
+    const functionUrl = data.find((item) => item.NAME === slug).URL;
+
+    const request = {
+      method,
+      body,
+    };
+
+    const response = await fetch(functionUrl, {
+      method: 'POST',
+      body: JSON.stringify(request),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    return await response.json();
+  }
+
+  private convertOutputToArrayOfObject<T>(stdout: string): T[] {
+    const lines = stdout.trim().split('\n');
+    const headers = lines[0].split(/\s+/);
+    const data = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      const values = lines[i].split(/\s+/);
+      const entry = {};
+
+      for (let j = 0; j < headers.length; j++) {
+        entry[headers[j]] = values[j];
+      }
+
+      data.push(entry);
+    }
+
+    return data;
   }
 }

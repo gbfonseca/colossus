@@ -2,6 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CommandService } from 'src/utils/command/command.service';
 
 import { KnativeService } from '../../../../src/infra/knative/knative.service';
+import { Factory } from '../../../fixtures/Factory';
+
+global.fetch = jest.fn();
 
 describe('KnativeService', () => {
   let service: KnativeService;
@@ -51,6 +54,21 @@ describe('KnativeService', () => {
     });
 
     const result = await service.createFunction(fakeServerlessStoragePath);
+    expect(result).toBeTruthy();
+    expect(result.message).toBe('Função serverless criada com sucesso!');
+  });
+
+  it('should invoke function', async () => {
+    const invokeFunctioDTO = Factory.createInvokeFunctionDTO();
+    jest.spyOn(commandService, 'exec').mockResolvedValueOnce({
+      stderr: '',
+      stdout:
+        'NAME             URL ' +
+        '\n' +
+        'miniapp-zoro     http://miniapp-zoro.default.10.98.44.214.sslip.io',
+    });
+
+    const result = await service.invoke(invokeFunctioDTO);
     expect(result).toBeTruthy();
     expect(result.message).toBe('Função serverless criada com sucesso!');
   });
