@@ -1,29 +1,31 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { KnativeService } from 'src/infra/knative/knative.service';
+import { CommandService } from 'src/utils/command/command.service';
 
-import { ColossusRepository } from '../../../../src/modules/colossus/repository/colossus.repository';
-import { CommandService } from '../../../../src/utils/command/command.service';
-import { Factory } from '../../../fixtures/Factory';
+import { ColossusRepository } from '../../../../../src/modules/colossus/repository/colossus.repository';
+import { Factory } from '../../../../fixtures/Factory';
 
 describe('Colossus Repository Tests', () => {
   let colossusRepository: ColossusRepository;
-  let commandService: CommandService;
+  let knativeService: KnativeService;
 
   const file = Factory.createFunctionFile();
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ColossusRepository, CommandService],
+      providers: [ColossusRepository, KnativeService, CommandService],
       imports: [],
     }).compile();
 
     colossusRepository = module.get<ColossusRepository>(ColossusRepository);
-    commandService = module.get<CommandService>(CommandService);
+    knativeService = module.get<KnativeService>(KnativeService);
   });
 
   it('should create function', async () => {
     jest
-      .spyOn(commandService, 'exec')
+      .spyOn(knativeService, 'createFunction')
       .mockImplementationOnce(
-        () => new Promise((resolve) => resolve({ stdout: '', stderr: '' })),
+        () =>
+          new Promise((resolve) => resolve({ message: 'Criado com sucesso' })),
       );
 
     const createFunctionDTO = Factory.createFunctionDTO();

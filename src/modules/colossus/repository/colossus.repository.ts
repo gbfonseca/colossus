@@ -1,8 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { KnativeService } from 'src/infra/knative/knative.service';
 
-import { CommandService } from '../../../utils/command/command.service';
 import { CreateFunctionDTO } from '../dto/CreateFunctionDTO';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class ColossusRepository {
   private readonly logger = new Logger(ColossusRepository.name);
 
   constructor(
-    @Inject(CommandService) private readonly commandService: CommandService,
+    @Inject(KnativeService) private readonly knativeService: KnativeService,
   ) {}
 
   async createFunction(
@@ -51,10 +51,7 @@ export class ColossusRepository {
     await fs.cp(templatePath, storagePath, { recursive: true });
     await fs.writeFile(filePath, code);
 
-    const command = `cd ${storagePath} && func deploy --registry gbfonseca`;
-
-    this.logger.debug('Processando deploy para o Knative', { command });
-    await this.commandService.exec(command);
+    await this.knativeService.createFunction(storagePath);
 
     this.logger.debug('Serverless function criada e deployada com sucesso!', {
       fileName,

@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { KnativeService } from 'src/infra/knative/knative.service';
 
 import { ColossusController } from '../../../../src/modules/colossus/colossus.controller';
 import { ColossusService } from '../../../../src/modules/colossus/colossus.service';
@@ -12,7 +13,12 @@ describe('ColossusController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ColossusController],
-      providers: [ColossusService, ColossusRepository, CommandService],
+      providers: [
+        ColossusService,
+        ColossusRepository,
+        CommandService,
+        KnativeService,
+      ],
     }).compile();
 
     controller = module.get<ColossusController>(ColossusController);

@@ -57,17 +57,29 @@
       "json",
       "ts"
     ],
-    "rootDir": "test",
-    "testRegex": ".*\\.spec\\.ts$",
+    "rootDir": ".",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
+    "collectCoverage": true,
     "collectCoverageFrom": [
-      "**/*.(t|j)s",
-      "!**/*.module.(t|j)s",
-      "!main.ts"
+      "<rootDir>/src/**/*.(t|j)s",
+      "!<rootDir>/src/**/*.module.(t|j)s",
+      "!<rootDir>/src/**/domain/**"
+    ],
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/coverage/",
+      "<rootDir>/template/",
+      "<rootDir>/storage/",
+      "<rootDir>/dist/",
+      "<rootDir>/src/main.ts",
+      "<rootDir>/.eslint"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^src/(.*)": "<rootDir>/src/../src/$1"
+    },
+    "testMatch": ["<rootDir>/test/**/*.*.spec.(t|j)s"]
   }
 }

@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CommandService } from './command.service';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { exec } from 'child_process';
+
+import { CommandService } from '../../../src/utils/command/command.service';
 
 jest.doMock('child_process', () => ({
   exec: jest.fn().mockReturnValue({}),

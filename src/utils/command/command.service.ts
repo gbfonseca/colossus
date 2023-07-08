@@ -5,7 +5,7 @@ import * as util from 'util';
 const asyncExec = util.promisify(exec);
 @Injectable()
 export class CommandService {
-  async exec(command: string): Promise<unknown> {
+  async exec(command: string): Promise<{ stdout: string; stderr: string }> {
     if (!command || command === '')
       throw new Error('Comando provido é nulo ou inválido.');
 
