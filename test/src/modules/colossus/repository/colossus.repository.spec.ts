@@ -9,7 +9,7 @@ describe('Colossus Repository Tests', () => {
   let colossusRepository: ColossusRepository;
   let knativeService: KnativeService;
 
-  const file = Factory.createFunctionFile();
+  const files = Factory.createFunctionFile();
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [ColossusRepository, KnativeService, CommandService],
@@ -30,7 +30,7 @@ describe('Colossus Repository Tests', () => {
 
     const createFunctionDTO = Factory.createFunctionDTO();
     const response = await colossusRepository.createFunction(
-      file,
+      files,
       createFunctionDTO,
     );
 

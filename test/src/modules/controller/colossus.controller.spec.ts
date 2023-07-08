@@ -30,7 +30,7 @@ describe('ColossusController', () => {
   });
 
   it('should be create serverless function', async () => {
-    const file = Factory.createFunctionFile();
+    const files = Factory.createFunctionFile();
 
     jest
       .spyOn(colossusService, 'createFunction')
@@ -38,7 +38,7 @@ describe('ColossusController', () => {
 
     const createFunctionDTO = Factory.createFunctionDTO();
     const result = await controller.createServerlessFunction(
-      file,
+      files,
       createFunctionDTO,
     );
 

@@ -11,7 +11,7 @@ export class ColossusService {
   ) {}
 
   async createFunction(
-    file: Express.Multer.File,
+    file: Express.Multer.File[],
     createFunctionDTO: CreateFunctionDTO,
   ): Promise<{ ok: boolean }> {
     if (!file) throw new Error('Arquivo de função provido é inválido ou nulo');

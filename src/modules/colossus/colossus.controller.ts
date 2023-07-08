@@ -5,9 +5,10 @@ import {
   Logger,
   Post,
   UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { ColossusService } from './colossus.service';
 import { CreateFunctionDTO } from './dto/CreateFunctionDTO';
@@ -21,9 +22,9 @@ export class ColossusController {
   ) {}
 
   @Post('/file')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FilesInterceptor('file'))
   async createServerlessFunction(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() file: Express.Multer.File[],
     @Body() body: CreateFunctionDTO,
   ) {
     this.logger.debug(

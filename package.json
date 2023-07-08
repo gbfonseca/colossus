@@ -61,7 +61,6 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
-    "collectCoverage": true,
     "collectCoverageFrom": [
       "<rootDir>/src/**/*.(t|j)s",
       "!<rootDir>/src/**/*.module.(t|j)s",

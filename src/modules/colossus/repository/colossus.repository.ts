@@ -14,12 +14,10 @@ export class ColossusRepository {
   ) {}
 
   async createFunction(
-    file: Express.Multer.File,
+    files: Express.Multer.File[],
     createFunctionDTO: CreateFunctionDTO,
   ): Promise<{ ok: boolean }> {
-    const { originalname, buffer } = file;
     const { slug } = createFunctionDTO;
-    const fileName = originalname.split('.')[0];
     const storagePath = path.resolve(
       __dirname,
       '..',
@@ -38,23 +36,25 @@ export class ColossusRepository {
       'template',
       'serverless-template',
     );
-    const filePath = path.resolve(storagePath, 'developer-code.js');
 
-    const code = buffer.toString('utf-8');
+    for (const file of files) {
+      const { originalname, buffer } = file;
+      const filePath = path.resolve(storagePath, originalname);
+
+      const code = buffer.toString('utf-8');
+      await fs.mkdir(storagePath, { recursive: true });
+      await fs.cp(templatePath, storagePath, { recursive: true });
+      await fs.writeFile(filePath, code);
+    }
 
     this.logger.debug(
       'Criando storage a apartir do template e movendo serverless function',
-      { code },
+      { slug },
     );
-
-    await fs.mkdir(storagePath, { recursive: true });
-    await fs.cp(templatePath, storagePath, { recursive: true });
-    await fs.writeFile(filePath, code);
 
     await this.knativeService.createFunction(storagePath);
 
     this.logger.debug('Serverless function criada e deployada com sucesso!', {
-      fileName,
       slug,
     });
 

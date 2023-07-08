@@ -9,7 +9,7 @@ describe('ColossusService', () => {
   let service: ColossusService;
   let colossusRepository: ColossusRepository;
 
-  const file = Factory.createFunctionFile();
+  const files = Factory.createFunctionFile();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -50,7 +50,7 @@ describe('ColossusService', () => {
       );
     const createFunctionDTO = Factory.createFunctionDTO();
 
-    const promise = service.createFunction(file, createFunctionDTO);
+    const promise = service.createFunction(files, createFunctionDTO);
 
     await expect(promise).rejects.toThrow('Houve um erro ao criar função.');
   });
@@ -61,7 +61,7 @@ describe('ColossusService', () => {
       .mockResolvedValueOnce({ ok: true });
     const createFunctionDTO = Factory.createFunctionDTO();
 
-    const result = await service.createFunction(file, createFunctionDTO);
+    const result = await service.createFunction(files, createFunctionDTO);
 
     expect(result.ok).toBe(true);
   });
