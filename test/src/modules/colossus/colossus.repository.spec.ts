@@ -1,31 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Test, TestingModule } from '@nestjs/testing';
-import { ColossusRepository } from './ColossusRepository';
-import { Readable } from 'stream';
-import { CommandService } from '../../../utils/command/command.service';
+
+import { ColossusRepository } from '../../../../src/modules/colossus/repository/colossus.repository';
+import { CommandService } from '../../../../src/utils/command/command.service';
+import { Factory } from '../../../fixtures/Factory';
 
 describe('Colossus Repository Tests', () => {
   let colossusRepository: ColossusRepository;
   let commandService: CommandService;
 
-  const file: Express.Multer.File = {
-    filename: 'teste.js',
-    buffer: Buffer.from(`module.exports = class Serverless {
-      async handler(req){
-        console.log(">>>>>>>>>>>>>")
-      return {message: 'coeeeee'}
-      }
-    }`),
-    destination: '',
-    fieldname: '',
-    mimetype: '',
-    originalname: 'teste',
-    path: '/tmp/test.js',
-    size: 120,
-    encoding: '',
-    stream: new Readable(),
-  };
-
+  const file = Factory.createFunctionFile();
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [ColossusRepository, CommandService],
@@ -43,7 +26,11 @@ describe('Colossus Repository Tests', () => {
         () => new Promise((resolve) => resolve({ stdout: '', stderr: '' })),
       );
 
-    const response = await colossusRepository.createFunction(file);
+    const createFunctionDTO = Factory.createFunctionDTO();
+    const response = await colossusRepository.createFunction(
+      file,
+      createFunctionDTO,
+    );
 
     expect(response.ok).toBe(true);
   });

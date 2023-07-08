@@ -1,5 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ColossusRepository } from './repository/ColossusRepository';
+
+import { CreateFunctionDTO } from './dto/CreateFunctionDTO';
+import { ColossusRepository } from './repository/colossus.repository';
 
 @Injectable()
 export class ColossusService {
@@ -8,9 +10,15 @@ export class ColossusService {
     private readonly colossusRepository: ColossusRepository,
   ) {}
 
-  async createFunction(file: Express.Multer.File): Promise<{ ok: boolean }> {
+  async createFunction(
+    file: Express.Multer.File,
+    createFunctionDTO: CreateFunctionDTO,
+  ): Promise<{ ok: boolean }> {
     if (!file) throw new Error('Arquivo de função provido é inválido ou nulo');
 
-    return await this.colossusRepository.createFunction(file);
+    return await this.colossusRepository.createFunction(
+      file,
+      createFunctionDTO,
+    );
   }
 }

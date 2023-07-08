@@ -1,12 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ColossusController } from './colossus.controller';
-import { ColossusService } from './colossus.service';
-import { ColossusRepository } from './repository/ColossusRepository';
-import { CommandService } from '../../utils/command/command.service';
-import { Readable } from 'stream';
-import child_process from 'child_process';
 
-jest.doMock('child_process');
+import { ColossusController } from '../../../../src/modules/colossus/colossus.controller';
+import { ColossusService } from '../../../../src/modules/colossus/colossus.service';
+import { ColossusRepository } from '../../../../src/modules/colossus/repository/colossus.repository';
+import { CommandService } from '../../../../src/utils/command/command.service';
+import { Factory } from '../../../fixtures/Factory';
 
 describe('ColossusController', () => {
   let controller: ColossusController;
@@ -26,24 +24,17 @@ describe('ColossusController', () => {
   });
 
   it('should be create serverless function', async () => {
-    const file: Express.Multer.File = {
-      filename: 'teste.js',
-      buffer: Buffer.from(''),
-      destination: '',
-      fieldname: '',
-      mimetype: '',
-      originalname: 'teste',
-      path: '/tmp/test.js',
-      size: 120,
-      encoding: '',
-      stream: new Readable(),
-    };
+    const file = Factory.createFunctionFile();
 
     jest
       .spyOn(colossusService, 'createFunction')
       .mockResolvedValueOnce({ ok: true });
 
-    const result = await controller.createServerlessFunction(file);
+    const createFunctionDTO = Factory.createFunctionDTO();
+    const result = await controller.createServerlessFunction(
+      file,
+      createFunctionDTO,
+    );
 
     expect(result.ok).toBe(true);
   });

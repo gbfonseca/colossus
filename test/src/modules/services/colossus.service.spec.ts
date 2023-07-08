@@ -1,24 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ColossusService } from './colossus.service';
-import { Readable } from 'stream';
-import { ColossusRepository } from './repository/ColossusRepository';
-import { CommandService } from '../../utils/command/command.service';
+
+import { ColossusService } from '../../../../src/modules/colossus/colossus.service';
+import { ColossusRepository } from '../../../../src/modules/colossus/repository/colossus.repository';
+import { CommandService } from '../../../../src/utils/command/command.service';
+import { Factory } from '../../../fixtures/Factory';
 describe('ColossusService', () => {
   let service: ColossusService;
   let colossusRepository: ColossusRepository;
 
-  const file: Express.Multer.File = {
-    filename: 'teste.js',
-    buffer: Buffer.from(''),
-    destination: '',
-    fieldname: '',
-    mimetype: '',
-    originalname: 'teste',
-    path: '/tmp/test.js',
-    size: 120,
-    encoding: '',
-    stream: new Readable(),
-  };
+  const file = Factory.createFunctionFile();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -35,7 +25,8 @@ describe('ColossusService', () => {
 
   it('should return error if invalid file provided when try create function', async () => {
     const file = null;
-    const promise = service.createFunction(file);
+    const createFunctionDTO = Factory.createFunctionDTO();
+    const promise = service.createFunction(file, createFunctionDTO);
 
     await expect(promise).rejects.toThrow(
       'Arquivo de função provido é inválido ou nulo',
@@ -51,8 +42,9 @@ describe('ColossusService', () => {
             reject(new Error('Houve um erro ao criar função.')),
           ),
       );
+    const createFunctionDTO = Factory.createFunctionDTO();
 
-    const promise = service.createFunction(file);
+    const promise = service.createFunction(file, createFunctionDTO);
 
     await expect(promise).rejects.toThrow('Houve um erro ao criar função.');
   });
@@ -61,8 +53,9 @@ describe('ColossusService', () => {
     jest
       .spyOn(colossusRepository, 'createFunction')
       .mockResolvedValueOnce({ ok: true });
+    const createFunctionDTO = Factory.createFunctionDTO();
 
-    const result = await service.createFunction(file);
+    const result = await service.createFunction(file, createFunctionDTO);
 
     expect(result.ok).toBe(true);
   });
